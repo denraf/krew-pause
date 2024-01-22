@@ -1,7 +1,7 @@
 apiVersion: krew.googlecontainertools.github.com/v1alpha2
 kind: Plugin
 metadata:
-  name: {{ .PluginName }}
+  name: krew-pause
 spec:
   version: "v0.1.0"
   platforms:
@@ -9,47 +9,47 @@ spec:
       matchLabels:
         os: linux
         arch: amd64
-    uri: https://github.com/{{ .Owner }}/{{ .Repo }}/releases/download/v0.1.0/{{ .PluginName }}_linux_amd64.tar.gz
+    uri: https://github.com/denraf/krew-pause/releases/download/v0.1.0/krew-pause_linux_amd64.tar.gz
     sha256: ""
     files:
-    - from: "./{{ .PluginName }}"
+    - from: "./krew-pause"
       to: "."
     - from: LICENSE
       to: "."
-    bin: "{{ .PluginName }}"
+    bin: "krew-pause"
   - selector:
       matchLabels:
         os: darwin
         arch: amd64
-    uri: https://github.com/{{ .Owner }}/{{ .Repo }}/releases/download/v0.1.0/{{ .PluginName }}_darwin_amd64.tar.gz
+    uri: https://github.com/denraf/krew-pause/releases/download/v0.1.0/krew-pause_darwin_amd64.tar.gz
     sha256: ""
     files:
-    - from: "./{{ .PluginName }}"
+    - from: "./krew-pause"
       to: "."
     - from: LICENSE
       to: "."
-    bin: "{{ .PluginName }}"
+    bin: "krew-pause"
   - selector:
       matchLabels:
         os: windows
         arch: amd64
-    uri: https://github.com/{{ .Owner }}/{{ .Repo }}/releases/download/v0.1.0/{{ .PluginName }}_windows_amd64.zip
+    uri: https://github.com/denraf/krew-pause/releases/download/v0.1.0/krew-pause_windows_amd64.zip
     sha256: ""
     files:
-    - from: "/{{ .PluginName }}.exe"
+    - from: "/krew-pause.exe"
       to: "."
     - from: LICENSE
       to: "."
-    bin: "{{ .PluginName }}.exe"
+    bin: "krew-pause.exe"
   shortDescription: A new plugin
-  homepage: https://github.com/{{ .Owner }}/{{ .Repo }}
+  homepage: https://github.com/denraf/krew-pause
   caveats: |
     Usage:
-      $ kubectl {{ .PluginName }}
+      $ kubectl krew-pause
 
     For additional options:
-      $ kubectl {{ .PluginName }} --help
-      or https://github.com/{{ .Owner }}/{{ .Repo }}/blob/v0.1.0/doc/USAGE.md
+      $ kubectl krew-pause --help
+      or https://github.com/denraf/krew-pause/blob/v0.1.0/doc/USAGE.md
 
   description: |
     This is a new plugin

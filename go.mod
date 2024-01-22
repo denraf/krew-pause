@@ -1,4 +1,4 @@
-module github.com/replicatedhq/krew-plugin-template
+module github.com/denraf/krew-pause
 
 go 1.16
 

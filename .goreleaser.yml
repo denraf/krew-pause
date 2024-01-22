@@ -1,10 +1,10 @@
-project_name: {{ .PluginName }}
+project_name: krew-pause
 release:
   github:
-    owner: {{ .Owner }}
-    name: {{ .Repo }}
+    owner: denraf
+    name: krew-pause
 builds:
-  - id: {{ .PluginName }}
+  - id: krew-pause
     goos:
     - linux
     - windows
@@ -17,12 +17,12 @@ builds:
       - GO111MODULE=on
     main: cmd/plugin/main.go
     ldflags: -s -w
-      -X github.com/{{ .Owner }}/{{ .Repo }}/pkg/version.version=
+      -X github.com/denraf/krew-pause/pkg/version.version=
 archives:
-  - id: {{ .PluginName }}
+  - id: krew-pause
     builds:
-    - {{ .PluginName }}
-    name_template: {{ `"{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"` }}
+    - krew-pause
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:
     - goos: windows
       format: zip
