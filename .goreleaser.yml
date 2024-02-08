@@ -8,7 +8,6 @@ builds:
     goos:
     - linux
     - windows
-    - darwin
     goarch:
     - amd64
     - "386"
@@ -16,8 +15,15 @@ builds:
       - CGO_ENABLED=0
       - GO111MODULE=on
     main: cmd/plugin/main.go
-    ldflags: -s -w
-      -X github.com/denraf/krew-pause/pkg/version.version=
+    ldflags: -s -w -X github.com/denraf/krew-pause/pkg/version.version=
+  - id: krew-pause-darwin
+    goos:
+    - darwin
+    goarch:
+    - amd64
+    - arm64
+    main: cmd/plugin/main.go
+    ldflags: -s -w -X github.com/denraf/krew-pause/pkg/version.Version=
 archives:
   - id: krew-pause
     builds:
@@ -26,3 +32,9 @@ archives:
     format_overrides:
     - goos: windows
       format: zip
+  - id: krew-pause-darwin
+    builds:
+    - krew-pause-darwin
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+snapshot:
+  name_template: SNAPSHOT-{{ .Commit }}
