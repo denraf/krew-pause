@@ -5,19 +5,17 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
-
-	"github.com/denraf/krew-pause/pkg/logger"
-	"github.com/denraf/krew-pause/pkg/plugin"
+	
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/tj/go-spin"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 )
 
 var (
 	KubernetesConfigFlags *genericclioptions.ConfigFlags
 )
+
+const annotationKey = "kubectl-krew-pause/replicas"
 
 func RootCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -29,44 +27,12 @@ func RootCmd() *cobra.Command {
 		PreRun: func(cmd *cobra.Command, args []string) {
 			viper.BindPFlags(cmd.Flags())
 		},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			log := logger.NewLogger()
-			log.Info("")
-
-			s := spin.New()
-			finishedCh := make(chan bool, 1)
-			namespaceName := make(chan string, 1)
-			go func() {
-				lastNamespaceName := ""
-				for {
-					select {
-					case <-finishedCh:
-						fmt.Printf("\r")
-						return
-					case n := <-namespaceName:
-						lastNamespaceName = n
-					case <-time.After(time.Millisecond * 100):
-						if lastNamespaceName == "" {
-							fmt.Printf("\r  \033[36mSearching for namespaces\033[m %s", s.Next())
-						} else {
-							fmt.Printf("\r  \033[36mSearching for namespaces\033[m %s (%s)", s.Next(), lastNamespaceName)
-						}
-					}
-				}
-			}()
-			defer func() {
-				finishedCh <- true
-			}()
-
-			if err := plugin.RunPlugin(KubernetesConfigFlags, namespaceName); err != nil {
-				return errors.Unwrap(err)
-			}
-
-			log.Info("")
-
-			return nil
-		},
+		RunE: rootCmdRun,
 	}
+	cmd.PersistentFlags().StringP("namespace", "n", "", "namespace")
+
+	cmd.AddCommand(PauseCmd())
+	cmd.AddCommand(UnPauseCmd())
 
 	cobra.OnInitialize(initConfig)
 
@@ -75,6 +41,17 @@ func RootCmd() *cobra.Command {
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	return cmd
+}
+
+func rootCmdRun(cmd *cobra.Command, args []string) error {
+	fmt.Println("rootcmd")
+	fmt.Println(args)
+	fmt.Println(len(args))
+
+	if len(args) != 2 {
+		return errors.New("Usage: kubectl -n <namespace> krew-pause {pause|unpause} {deployment/<deployment-name>|statefulset/<statefulset-name>}")
+	}
+	return nil
 }
 
 func InitAndExecute() {
